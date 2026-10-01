@@ -1,10 +1,10 @@
 use gix::Repository;
 use std::error::Error;
-use std::path::Path;
+use crate::config::VcsConfig;
 
-pub fn clone_if_not_exist(dir: &Path, url: &str) -> Result<Repository, Box<dyn Error>> {
-    if dir.exists() {
-        let repo = gix::open(dir)?;
+pub fn clone_if_not_exist(vcs_config: &VcsConfig) -> Result<Repository, Box<dyn Error>> {
+    if vcs_config.clone_path.exists() {
+        let repo = gix::open(&vcs_config.clone_path)?;
         return Ok(repo);
     }
     let (repo, _) = {
@@ -17,7 +17,7 @@ pub fn clone_if_not_exist(dir: &Path, url: &str) -> Result<Repository, Box<dyn E
         );
         let mut task = tree.add_child("clone");
         let result =
-            gix::prepare_clone(url, dir)?.fetch_only(&mut task, &gix::interrupt::IS_INTERRUPTED)?;
+            gix::prepare_clone(vcs_config.url.clone(), vcs_config.clone_path.clone())?.fetch_only(&mut task, &gix::interrupt::IS_INTERRUPTED)?;
         drop(progress);
         result
     };
