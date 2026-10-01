@@ -2,19 +2,19 @@ use gix::Repository;
 use std::error::Error;
 use std::path::Path;
 use std::time::Duration;
+mod config;
 
 fn main() {
-    let dir = Path::new("/repo");
-    let url = String::from("https://github.com/poske57/portfolio.git");
-    let repo = clone_if_not_exist(dir, url);
+    let config = config::get_config();
+    let repo = clone_if_not_exist(&config.repository_path, &config.repository_url);
     println!("{:?}", repo);
     loop {
         println!("reconciliation!");
-        std::thread::sleep(Duration::from_secs(15 * 60));
+        std::thread::sleep(Duration::from_secs(&config.reconciliation_cycle * 60));
     }
 }
 
-fn clone_if_not_exist(dir: &Path, url: String) -> Result<Repository, Box<dyn Error>> {
+fn clone_if_not_exist(dir: &Path, url: &str) -> Result<Repository, Box<dyn Error>> {
     if dir.exists() {
         let repo = gix::open(dir)?;
         return Ok(repo);
