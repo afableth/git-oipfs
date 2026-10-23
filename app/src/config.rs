@@ -25,17 +25,19 @@ impl VcsConfig {
 
 pub struct BuildConfig {
     pub command: String,
+    pub publish_dir: PathBuf,
 }
 
 pub fn get_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
     Ok(AppConfig {
         vcs_config: VcsConfig {
             url: Url::try_from("https://github.com/poske57/portfolio.git")?,
-            clone_path: PathBuf::from("./repo"),
+            clone_path: PathBuf::from("./oipfs/repo"),
             build_root: None,
         },
         build_config: BuildConfig {
             command: String::from("nix run nixpkgs#hugo build"),
+            publish_dir: PathBuf::from("./oipfs/publish"),
         },
         reconciliation_cycle: 15,
     })
