@@ -13,6 +13,16 @@ pub struct VcsConfig {
     pub build_root: Option<PathBuf>,
 }
 
+impl VcsConfig {
+    pub fn build_path(&self) -> PathBuf {
+        if let Some(r) = self.build_root.clone() {
+            self.clone_path.join(r)
+        } else {
+            self.clone_path.clone()
+        }
+    }
+}
+
 pub struct BuildConfig {
     pub command: String,
 }
