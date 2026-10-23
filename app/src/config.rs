@@ -1,5 +1,6 @@
 use gix::Url;
 use std::path::PathBuf;
+use std::ffi::OsString;
 
 pub struct AppConfig {
     pub vcs_config: VcsConfig,
@@ -24,7 +25,8 @@ impl VcsConfig {
 }
 
 pub struct BuildConfig {
-    pub command: String,
+    pub program: OsString,
+    pub args: Vec<OsString>,
     pub publish_dir: PathBuf,
 }
 
@@ -36,7 +38,8 @@ pub fn get_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
             build_root: None,
         },
         build_config: BuildConfig {
-            command: String::from("nix run nixpkgs#hugo build"),
+            program: OsString::from("hugo"),
+            args: vec![OsString::from("build")],
             publish_dir: PathBuf::from("./oipfs/publish"),
         },
         reconciliation_cycle: 15,
