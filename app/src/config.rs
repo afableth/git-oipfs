@@ -1,6 +1,6 @@
 use gix::Url;
-use std::path::PathBuf;
 use std::ffi::OsString;
+use std::path::PathBuf;
 
 pub struct AppConfig {
     pub vcs_config: VcsConfig,

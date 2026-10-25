@@ -19,4 +19,3 @@ fn build(config: &config::AppConfig) -> Result<std::process::Output, std::io::Er
         .args(&config.build_config.args)
         .output()
 }
-
