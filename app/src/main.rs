@@ -1,10 +1,11 @@
 mod config;
 mod vcs;
 
-fn main() {
-    let config = config::get_config().expect("failed to load config");
-    reconciliation(&config).expect("failed");
+fn main() -> Result<(), Box<dyn std::error::Error>> {
+    let config = config::get_config()?;
+    reconciliation(&config)?;
     println!("reconciliation!");
+    Ok(())
 }
 
 fn reconciliation(config: &config::AppConfig) -> Result<(), Box<dyn std::error::Error>> {
