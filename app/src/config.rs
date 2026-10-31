@@ -11,6 +11,7 @@ pub struct AppConfig {
 pub struct VcsConfig {
     pub url: gix::Url,
     pub clone_path: PathBuf,
+    pub checkout_path: PathBuf,
     pub build_root: Option<PathBuf>,
 }
 
@@ -35,6 +36,7 @@ pub fn get_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
         vcs_config: VcsConfig {
             url: Url::try_from("https://github.com/afableth/portfolio.git")?,
             clone_path: PathBuf::from("./oipfs/repo"),
+            checkout_path: PathBuf::from("./oipfs/checkout"),
             build_root: None,
         },
         build_config: BuildConfig {

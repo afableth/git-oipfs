@@ -10,6 +10,7 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 fn reconciliation(config: &config::AppConfig) -> Result<(), Box<dyn std::error::Error>> {
     let repo = vcs::clone_if_not_exist(&config.vcs_config)?;
+    vcs::checkout_head_to(&repo, &config.vcs_config.checkout_path)?;
     build(&config)?;
     Ok(())
 }
