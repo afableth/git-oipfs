@@ -33,7 +33,7 @@ pub struct BuildConfig {
 pub fn get_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
     Ok(AppConfig {
         vcs_config: VcsConfig {
-            url: Url::try_from("https://github.com/poske57/portfolio.git")?,
+            url: Url::try_from("https://github.com/afableth/portfolio.git")?,
             clone_path: PathBuf::from("./oipfs/repo"),
             build_root: None,
         },
