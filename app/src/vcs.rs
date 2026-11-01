@@ -64,12 +64,13 @@ pub fn checkout_head_to(repo: &Repository, dest: &std::path::Path) -> Result<(),
 }
 
 pub fn clone_if_not_exist(vcs_config: &VcsConfig) -> Result<Repository, Box<dyn Error>> {
-    if vcs_config.clone_path.exists() {
-        let repo = gix::open(&vcs_config.clone_path)?;
+    let dest = vcs_config.working_directory.join("repo");
+    if dest.exists() {
+        let repo = gix::open(&dest)?;
         return Ok(repo);
     }
-    create_dir_all(&vcs_config.clone_path)?;
-    let (repo, _) = gix::prepare_clone_bare(vcs_config.url.clone(), &vcs_config.clone_path)?
+    create_dir_all(&dest)?;
+    let (repo, _) = gix::prepare_clone_bare(vcs_config.url.clone(), &dest)?
         .fetch_only(gix::progress::Discard, &gix::interrupt::IS_INTERRUPTED)?;
     return Ok(repo);
 }
