@@ -28,8 +28,12 @@ pub fn get_config() -> Result<AppConfig, Box<dyn std::error::Error>> {
             build_root: None,
         },
         build_config: BuildConfig {
-            program: OsString::from("hugo"),
-            args: vec![OsString::from("build")],
+            program: OsString::from("nix"),
+            args: vec![
+                OsString::from("run"),
+                OsString::from("nixpkgs#hugo"),
+                OsString::from("build"),
+            ],
             publish_dir: PathBuf::from("./oipfs/publish"),
         },
         reconciliation_cycle: 15,
