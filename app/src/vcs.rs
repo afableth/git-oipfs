@@ -42,11 +42,17 @@ fn read_tree(
 
 /// HEAD のファイル構成を指定パスに展開する
 pub fn checkout_head_to(repo: &Repository, dest: &std::path::Path) -> Result<(), Box<dyn Error>> {
-    // dest 配下の既存コンテンツをクリア
     if dest.exists() {
+        // clear the dest directory
         for entry in fs::read_dir(dest)? {
             let entry = entry?;
-            fs::remove_dir_all(entry.path())?;
+            let path = entry.path();
+            // delete the symlink too
+            if path.is_dir() && !path.is_symlink() {
+                fs::remove_dir_all(&path)?;
+            } else {
+                fs::remove_file(&path)?;
+            }
         }
     } else {
         create_dir_all(dest)?;

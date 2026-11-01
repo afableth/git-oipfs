@@ -1,8 +1,5 @@
 mod config;
 mod vcs;
-use std::path::PathBuf;
-
-use crate::config::VcsConfig;
 
 fn main() -> Result<(), Box<dyn std::error::Error>> {
     let config = config::get_config()?;
@@ -13,18 +10,21 @@ fn main() -> Result<(), Box<dyn std::error::Error>> {
 
 fn reconciliation(config: &config::AppConfig) -> Result<(), Box<dyn std::error::Error>> {
     let repo = vcs::clone_if_not_exist(&config.vcs_config)?;
-    vcs::checkout_head_to(&repo, &config.vcs_config.working_directory.join("checkout"))?;
-    build(&config)?;
+    let checkout = config.vcs_config.working_directory.join("checkout");
+    vcs::checkout_head_to(&repo, &checkout)?;
+    build(&config, &checkout)?;
     Ok(())
 }
 
-fn build(config: &config::AppConfig) -> Result<std::process::Output, std::io::Error> {
-    let build_path = if let Some(r) = &config.vcs_config.build_root.clone() {
-        &config.vcs_config.working_directory.join("repo").join(r)
-    } else {
-        &config.vcs_config.working_directory.join("repo")
+fn build(
+    config: &config::AppConfig,
+    checkout: &std::path::Path,
+) -> Result<std::process::Output, std::io::Error> {
+    let build_path = match &config.vcs_config.build_root {
+        Some(r) => checkout.join(r),
+        None => checkout.to_path_buf(),
     };
-    std::env::set_current_dir(build_path)?;
+    std::env::set_current_dir(&build_path)?;
     std::process::Command::new(&config.build_config.program)
         .args(&config.build_config.args)
         .output()
